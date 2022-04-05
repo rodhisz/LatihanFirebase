@@ -21,10 +21,18 @@
             android:orientation="vertical"
             android:padding="30dp">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/cvi_user"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_account_circle" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
                 android:backgroundTint="@color/black"
                 android:text="User"
                 android:textAlignment="center"
@@ -36,6 +44,7 @@
                 android:id="@+id/edt_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="Email"
                 android:inputType="textEmailAddress" />
 
