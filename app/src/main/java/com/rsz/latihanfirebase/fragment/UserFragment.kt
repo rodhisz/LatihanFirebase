@@ -1,6 +1,7 @@
 package com.rsz.latihanfirebase.fragment
 
 import android.app.Activity.RESULT_OK
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -10,6 +11,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.rsz.latihanfirebase.LoginActivity
@@ -47,6 +50,14 @@ class UserFragment : Fragment() {
         if (user != null){
             binding.edtName.setText(user.displayName)
             binding.edtEmail.setText(user.email)
+
+            if (user.isEmailVerified){
+                binding.iconVerify.visibility = View.VISIBLE
+                binding.iconNotVerify.visibility = View.GONE
+            } else {
+                binding.iconVerify.visibility = View.GONE
+                binding.iconNotVerify.visibility = View.VISIBLE
+            }
         }
 
         binding.cviUser.setOnClickListener {
@@ -55,6 +66,21 @@ class UserFragment : Fragment() {
 
         binding.btnLogout.setOnClickListener {
             btnLogout()
+        }
+
+        binding.btnVerify.setOnClickListener {
+            emailVerification()
+        }
+    }
+
+    private fun emailVerification() {
+        val user = auth.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener {
+            if(it.isSuccessful){
+                Toast.makeText(activity, "Emial Verifikasi Telah Dikirim", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(activity, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

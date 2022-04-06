@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupTab() {
         val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFragment(HomeFragment(),"Home")
-        adapter.addFragment(UserFragment(),"User")
+        adapter.addFragment(UserFragment(),"Profile")
 
         binding.viewPager.adapter = adapter
         binding.tabs.setupWithViewPager(binding.viewPager)

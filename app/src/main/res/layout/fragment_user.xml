@@ -34,19 +34,46 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/black"
-                android:text="User"
+                android:text="Profile"
                 android:textAlignment="center"
                 android:textColor="@color/teal_700"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edt_email"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
-                android:hint="Email"
-                android:inputType="textEmailAddress" />
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/edt_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email@mail.com"
+                    android:textSize="18dp" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp">
+
+                    <ImageView
+                        android:id="@+id/icon_notVerify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_not_verified" />
+
+                    <ImageView
+                        android:id="@+id/icon_verify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_verified" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/edt_name"
@@ -56,11 +83,18 @@
                 android:inputType="numberPassword" />
 
             <Button
-                android:id="@+id/btn_logout"
+                android:id="@+id/btn_verify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/teal_700"
+                android:text="Email Verification" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
                 android:text="Logout" />
 
         </LinearLayout>
