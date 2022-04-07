@@ -13,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.storage.FirebaseStorage
 import com.rsz.latihanfirebase.LoginActivity
 import com.rsz.latihanfirebase.R
@@ -47,10 +49,12 @@ class UserFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
 
+        //kondisi user sedang login atau tidak
         if (user != null){
             binding.edtName.setText(user.displayName)
             binding.edtEmail.setText(user.email)
 
+            //kondisi email sudah verifikasi atau belum
             if (user.isEmailVerified){
                 binding.iconVerify.visibility = View.VISIBLE
                 binding.iconNotVerify.visibility = View.GONE
@@ -60,24 +64,136 @@ class UserFragment : Fragment() {
             }
         }
 
+        //ke kamera buat ambil gambar
         binding.cviUser.setOnClickListener {
             goToCamera()
         }
 
+        //button buat logout
         binding.btnLogout.setOnClickListener {
             btnLogout()
         }
 
+        //button buat verifikasi email
         binding.btnVerify.setOnClickListener {
             emailVerification()
         }
+
+        binding.btnChangePass.setOnClickListener {
+            changePass()
+        }
+    }
+
+    private fun changePass() {
+        auth = FirebaseAuth.getInstance()
+        val user = auth.currentUser
+
+        binding.cvCurrentPass.visibility = View.VISIBLE
+
+        binding.btnCancel.setOnClickListener {
+            binding.cvCurrentPass.visibility = View.GONE
+        }
+
+        binding.btnConfirm.setOnClickListener btnConfirm@{
+
+            val pass = binding.edtCurrentPassword.text.toString()
+
+            if (pass.isEmpty()) {
+                binding.edtCurrentPassword.error = "Password Tidak Boleh Kosong"
+                binding.edtCurrentPassword.requestFocus()
+                return@btnConfirm
+            }
+
+            user.let {
+                val userCredential = EmailAuthProvider.getCredential(it?.email!!,pass)
+                it.reauthenticate(userCredential).addOnCompleteListener { task ->
+                    when {
+                        task.isSuccessful -> {
+                            binding.cvCurrentPass.visibility = View.GONE
+                            binding.cvUpdatePass.visibility = View.VISIBLE
+                        }
+                        task.exception is FirebaseAuthInvalidCredentialsException -> {
+                            binding.edtCurrentPassword.error = "Password Salah"
+                            binding.edtCurrentPassword.requestFocus()
+                        }
+                        else -> {
+                            Toast.makeText(activity, "${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+
+            binding.btnNewCancel.setOnClickListener {
+                binding.cvCurrentPass.visibility = View.GONE
+                binding.cvUpdatePass.visibility = View.GONE
+            }
+
+            binding.btnNewChange.setOnClickListener newChangePassword@{
+
+                val newPass = binding.edtNewPass.text.toString()
+                val passConfirm = binding.edtConfirmPass.text.toString()
+
+                if (newPass.isEmpty()) {
+                    binding.edtCurrentPassword.error = "Password Tidak Boleh Kosong"
+                    binding.edtCurrentPassword.requestFocus()
+                    return@newChangePassword
+                }
+
+                if(passConfirm.isEmpty()){
+                    binding.edtCurrentPassword.error = "Ulangi Password Baru"
+                    binding.edtCurrentPassword.requestFocus()
+                    return@newChangePassword
+                }
+
+                if (newPass.length < 6) {
+                    binding.edtCurrentPassword.error = "Password Harus Lebih dari 6 Karakter"
+                    binding.edtCurrentPassword.requestFocus()
+                    return@newChangePassword
+                }
+
+                if (passConfirm.length < 6) {
+                    binding.edtCurrentPassword.error = "Password Tidak Sama"
+                    binding.edtCurrentPassword.requestFocus()
+                    return@newChangePassword
+                }
+
+                if (newPass != passConfirm) {
+                    binding.edtCurrentPassword.error = "Password Tidak Sama"
+                    binding.edtCurrentPassword.requestFocus()
+                    return@newChangePassword
+                }
+
+                user?.let {
+                    user.updatePassword(newPass).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            Toast.makeText(activity, "Password Berhasil diUpdate", Toast.LENGTH_SHORT).show()
+                            successLogout()
+                        } else {
+                            Toast.makeText(activity, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun successLogout() {
+        auth = FirebaseAuth.getInstance()
+        auth.signOut()
+
+        val intent = Intent(context, LoginActivity::class.java)
+        startActivity(intent)
+        activity?.finish()
+
+        Toast.makeText(activity, "Silahkan Login Kembali", Toast.LENGTH_SHORT).show()
     }
 
     private fun emailVerification() {
         val user = auth.currentUser
         user?.sendEmailVerification()?.addOnCompleteListener {
             if(it.isSuccessful){
-                Toast.makeText(activity, "Emial Verifikasi Telah Dikirim", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Email Verifikasi Telah Dikirim", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(activity, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
             }
