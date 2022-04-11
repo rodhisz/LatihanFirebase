@@ -17,6 +17,7 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.storage.FirebaseStorage
+import com.rsz.latihanfirebase.ChangeEmailActivity
 import com.rsz.latihanfirebase.LoginActivity
 import com.rsz.latihanfirebase.R
 import com.rsz.latihanfirebase.databinding.FragmentUserBinding
@@ -79,9 +80,19 @@ class UserFragment : Fragment() {
             emailVerification()
         }
 
+        //button change pass
         binding.btnChangePass.setOnClickListener {
             changePass()
         }
+
+        binding.btnChangeEmail.setOnClickListener {
+            changeEmail()
+        }
+    }
+
+    private fun changeEmail() {
+        val intent = Intent(context, ChangeEmailActivity::class.java)
+        startActivity(intent)
     }
 
     private fun changePass() {
