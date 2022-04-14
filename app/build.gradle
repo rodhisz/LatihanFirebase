@@ -57,4 +57,7 @@ dependencies {
 
     //Load Image Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //QR Code
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.1.2'
 }

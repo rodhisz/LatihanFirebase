@@ -1,7 +1,6 @@
 package com.rsz.latihanfirebase.fragment
 
 import android.app.Activity.RESULT_OK
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -12,14 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.storage.FirebaseStorage
 import com.rsz.latihanfirebase.ChangeEmailActivity
+import com.rsz.latihanfirebase.CodeScannerActivity
 import com.rsz.latihanfirebase.LoginActivity
-import com.rsz.latihanfirebase.R
 import com.rsz.latihanfirebase.databinding.FragmentUserBinding
 import java.io.ByteArrayOutputStream
 
@@ -85,9 +83,19 @@ class UserFragment : Fragment() {
             changePass()
         }
 
+        //button ganti email
         binding.btnChangeEmail.setOnClickListener {
             changeEmail()
         }
+
+        binding.btnScanQR.setOnClickListener {
+            scanQRCode()
+        }
+    }
+
+    private fun scanQRCode() {
+        val intent = Intent(context, CodeScannerActivity::class.java)
+        startActivity(intent)
     }
 
     private fun changeEmail() {
